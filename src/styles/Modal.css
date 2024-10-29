@@ -1,0 +1,23 @@
+/* Add this CSS to your styles for the modal */
+.modal {
+    position: fixed; /* Position it relative to the viewport */
+    top: 50%; /* Center it vertically */
+    left: 50%; /* Center it horizontally */
+    transform: translate(-50%, -50%); /* Offset to center */
+    z-index: 1000; /* Ensure it appears on top */
+    background-color: white; /* Background color */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Optional shadow */
+    padding: 20px; /* Optional padding */
+  }
+  
+  /* Optional: Modal overlay */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5); /* Dark overlay */
+    z-index: 999; /* Below the modal */
+  }
+  

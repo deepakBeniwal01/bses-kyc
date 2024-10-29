@@ -1,0 +1,116 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.table th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+/* Specific styles for address matching */
+.address-matching {
+  display: flex;
+  flex-direction: column;
+}
+
+.address-matching div {
+  margin-bottom: 5px; /* Adds space between addresses */
+}
+.address-matching div {
+  margin-bottom: 10px; /* Adds more space between feedback entries */
+}
+
+
+.table th:last-child {
+  padding: 8px;
+  text-align: left; /* Default left align for all columns */
+}
+
+
+.Modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 90%; /* Allow modal to take a larger portion of the screen */
+  width: 600px; /* Set a width for the modal */
+  max-height: fit-content; /* Limit the height of the modal */
+  overflow: auto; /* Enable scrolling if content exceeds */
+  padding: 20px;
+  background: white;
+  border-radius: 4px;
+  outline: none;
+  z-index: 1000; /* Ensure modal is on top */
+}
+
+/* Overlay styles */
+.Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75); /* Dark overlay */
+}
+
+/* Image styles within the modal */
+.ModalImage {
+  width: 100%; /* Adjust the width to fill the modal */
+  height: auto; /* Maintain aspect ratio */
+  max-width: 100%; /* Use full width while respecting modal size */
+  max-height: fit-content; /* Limit the height of the image */
+  margin: 0 auto; /* Center the image */
+  display: block; /* Center alignment */
+}
+
+/* Loading message styles */
+.loading-message {
+  text-align: center;
+  font-size: 2rem;
+  padding: 4rem;
+}
+
+/* Button styles */
+.image-button {
+  padding: 5px; /* Adjusts the button size */
+  background-color: #198754; /* Green background */
+  color: white; /* White text color */
+  border: none; /* No border */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  font-size: 16px; /* Increases font size */
+  transition: background-color 0.3s ease; /* Smooth background color transition */
+}
+
+.image-button:hover {
+  background-color: #1e3b2e; /* Darker color on hover */
+}
+
+.image-button:focus {
+  outline: none; /* Removes the focus outline */
+}
+
+.image-button:disabled {
+  opacity: 0.5; /* Reduce opacity to indicate disabled state */
+  filter: grayscale(100%); /* Make the image grayscale */
+  pointer-events: none; /* Disable pointer events */
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .Modal {
+    width: 95%; /* Take more width on smaller screens */
+    max-height: fit-content; /* Adjust max height for smaller screens */
+  }
+
+  .ModalImage {
+    max-height: fit-content; /* Reduce max height for images on smaller screens */
+  }
+}
