@@ -20,7 +20,7 @@ You can install Node.js using the NodeSource repository, which provides the late
    node -v
    npm -v
 
-### Getting Started
+## Getting Started
 
 1. **Clone and Run the Project**:
    
