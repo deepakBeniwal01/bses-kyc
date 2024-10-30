@@ -52,12 +52,12 @@ export const fetchApplicationResult = async (tftRequestId, applicationId) => {
   }
 };
 
-export const postRemark = async (applicationId, mlRemarks) => {
+export const postRemark = async (applicationId, mlRemarks , accuracy) => {
   try {
     const payload = {
       application_id: applicationId,
       ml_remarks: mlRemarks,
-      consider_for_accuracy: "True",
+      consider_for_accuracy: accuracy,
     };
 
     const response = await axios.post(`${API_BASE_URL}/ml-remarks`, payload);
