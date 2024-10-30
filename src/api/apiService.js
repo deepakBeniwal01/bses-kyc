@@ -1,18 +1,13 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://10.125.75.141:8000/app/kycapplication"; // Base URL
+const API_BASE_URL = process.env.REACT_APP_API_BASE;
 
-export const fetchAllResults = async (url) => {
+export const fetchAllResults = async (
+  url = `${API_BASE_URL}/feedback-applications/?page=1`
+) => {
   try {
-    if (url) {
-      const response = await axios.get(url);
-      return response.data;
-    } else {
-      const response = await axios.get(
-        `${API_BASE_URL}/feedback-applications/?page=1`
-      );
-      return response.data;
-    }
+    const response = await axios.get(url);
+    return response.data;
   } catch (error) {
     console.error("Error fetching all results:", error);
     return [];
@@ -27,8 +22,11 @@ export const fetchApplicationFeedback = async (applicationId) => {
     );
     return response.data[0];
   } catch (error) {
-    console.error(`Error fetching feedback for application ${applicationId}:`, error);
-    return null; // or an appropriate fallback value
+    console.error(
+      `Error fetching feedback for application ${applicationId}:`,
+      error
+    );
+    return null;
   }
 };
 
@@ -39,12 +37,18 @@ export const fetchApplicationResult = async (tftRequestId, applicationId) => {
       tft_request_id: "44952cfe-9641-4075-a20c-c658fb5d026f",
       application_id: applicationId,
     };
-    
-    const response = await axios.post(`${API_BASE_URL}/application-result`, payload);
+
+    const response = await axios.post(
+      `${API_BASE_URL}/application-result`,
+      payload
+    );
     return response.data;
   } catch (error) {
-    console.error(`Error fetching application result for ID ${applicationId}:`, error);
-    return null; // or an appropriate fallback value
+    console.error(
+      `Error fetching application result for ID ${applicationId}:`,
+      error
+    );
+    return null;
   }
 };
 
@@ -53,7 +57,7 @@ export const postRemark = async (applicationId, mlRemarks) => {
     const payload = {
       application_id: applicationId,
       ml_remarks: mlRemarks,
-      consider_for_accuracy: "True"
+      consider_for_accuracy: "True",
     };
 
     const response = await axios.post(`${API_BASE_URL}/ml-remarks`, payload);
@@ -69,20 +73,23 @@ export const postRemark = async (applicationId, mlRemarks) => {
 
 export const fetchDocumentWithToken = async (documentID) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/get-document/${documentID}`, {
-      responseType: 'blob', // Important to set responseType to blob
-    });
+    const response = await axios.get(
+      `${API_BASE_URL}/get-document/${documentID}`,
+      {
+        responseType: "blob", // Important to set responseType to blob
+      }
+    );
 
     // Check the Content-Type
-    const contentType = response.headers['content-type'];
+    const contentType = response.headers["content-type"];
 
     // Handle PDF response
-    if (contentType === 'application/pdf') {
+    if (contentType === "application/pdf") {
       const blob = new Blob([response.data], { type: contentType });
       const url = URL.createObjectURL(blob);
 
       // Create a link element to download the PDF
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
       a.download = `document_${documentID}.pdf`; // Set the filename for the download
       document.body.appendChild(a); // Append the link to the body
@@ -90,17 +97,16 @@ export const fetchDocumentWithToken = async (documentID) => {
       document.body.removeChild(a); // Remove the link after triggering the download
 
       URL.revokeObjectURL(url); // Free up memory by revoking the object URL
-    } 
+    }
     // Handle image response
-    else if (contentType.startsWith('image/')) {
+    else if (contentType.startsWith("image/")) {
       return response.data; // Return the blob data directly for image handling
     } else {
       console.error("The document is neither a valid PDF nor an image.");
-      return null; // Handle cases where the content is not supported
+      return null;
     }
-    
   } catch (error) {
     console.error("Error fetching document data:", error);
-    return null; // Return null or appropriate fallback
+    return null;
   }
 };

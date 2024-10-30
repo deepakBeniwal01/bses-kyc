@@ -24,7 +24,7 @@ const DetailView = () => {
         // Fetch application result using the TFT request ID
         const tftRequestId = "44952cfe-9641-4075-a20c-c658fb5d026f"; // Adjust as necessary
         const resultData = await fetchApplicationResult(tftRequestId, id);
-        
+
         // Setting fullDetails based on the fetched resultData
         setFullDetails({
           application_id: resultData.application_id,
@@ -45,7 +45,6 @@ const DetailView = () => {
           applied_address: resultData.applied_address,
           division_code: resultData.division_code,
         });
-       
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -67,7 +66,11 @@ const DetailView = () => {
   return (
     <div>
       <h2>Application ID: {id}</h2>
-      <button onClick={() => navigate("/")} className="btn btn-primary" style={{ marginBottom: "10px" }}>
+      <button
+        onClick={() => navigate("/")}
+        className="btn btn-primary"
+        style={{ marginBottom: "10px" }}
+      >
         Back to Main Page
       </button>
 

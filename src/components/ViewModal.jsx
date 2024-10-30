@@ -1,4 +1,3 @@
-// src/components/ImageModal.jsx
 import React from "react";
 import PropTypes from "prop-types";
 import "../styles/Modal.css";
@@ -9,7 +8,9 @@ const ImageModal = ({ isOpen, onClose, imageSrc }) => {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <span className="close" onClick={onClose}>&times;</span>
+        <span className="close" onClick={onClose}>
+          &times;
+        </span>
         <img src={imageSrc} alt="Snapshot" style={{ maxWidth: "100%" }} />
       </div>
     </div>

@@ -21,11 +21,9 @@
 }
 
 .address-matching div {
-  margin-bottom: 5px; /* Adds space between addresses */
+  margin: 20px 0px /* Adds space between addresses */
 }
-.address-matching div {
-  margin-bottom: 10px; /* Adds more space between feedback entries */
-}
+
 
 
 .table th:last-child {
@@ -113,4 +111,22 @@
   .ModalImage {
     max-height: fit-content; /* Reduce max height for images on smaller screens */
   }
+}
+
+
+
+.address-item {
+  display: flex; /* Aligns items in a row */
+  justify-content: space-between; /* Distributes space evenly */
+  border-bottom: 1px solid #ccc; /* Bottom border */
+  padding: 10px 0; /* Space between items */
+}
+
+.feedback-item {
+  margin-left: 10px; /* Space between address and feedback */
+}
+
+.address-matching-feedback {
+  display: flex;
+  flex-direction: column; /* Stacks feedback items vertically */
 }

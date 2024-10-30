@@ -2,34 +2,68 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ResultsTable from "./components/ResultsTable";
 import DetailView from "./components/DetailView/DetailView";
-import { fetchAllResults } from "./api/apiService"; // Importing the API function
+import { fetchAllResults } from "./api/apiService";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./styles/App.css";
 
 const App = () => {
-  const [results, setResults] = useState([]); // Stores the list of results
-  const [next, setNext] = useState(null); // URL for the next page
-  const [previous, setPrevious] = useState(null); // URL for the previous page
-  const [loading, setLoading] = useState(true); // For handling the loading state
+  const [results, setResults] = useState([]);
+  const [next, setNext] = useState(null);
+  const [previous, setPrevious] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [count, setCount] = useState(0); // Total count of items
+  const [currentPage, setCurrentPage] = useState(1); // Tracks the current page
+  const itemsPerPage = 10; // Number of items per page
+  const API_BASE_URL = process.env.REACT_APP_API_BASE; // Base URL
 
-  const fetchResults = async (url = null) => {
-    // Fetch data from API with pagination support
-    const apiResults = await fetchAllResults(url); // Pass the URL for fetching next/previous page
-    console.log("API results:", apiResults);
-
-    setResults(apiResults.results); // Set the fetched results array
-    setNext(apiResults.next); // Set the next page URL
-    setPrevious(apiResults.previous); // Set the previous page URL
-    setLoading(false); // Stop loading after data is fetched
+  const fetchResults = async (
+    url = `${API_BASE_URL}/feedback-applications/?page=1`,
+    page = 1
+  ) => {
+    setLoading(true);
+    const apiResults = await fetchAllResults(url);
+    setResults(apiResults.results);
+    setNext(apiResults.next);
+    setPrevious(apiResults.previous);
+    setCount(apiResults.count); // Set the total count of items
+    setCurrentPage(page); // Update the current page
+    setLoading(false);
   };
 
   useEffect(() => {
-    // Initially fetch the first page of results
-    fetchResults();
+    fetchResults(); // Initial data fetch
   }, []);
 
+  // Calculate total pages based on the count and items per page
+  const totalPages = Math.ceil(count / itemsPerPage);
+
   if (loading) {
-    return <div>Loading...</div>; // Loading state
+    return <div>Loading...</div>;
   }
+
+  // Calculate the range of page numbers to display
+  const getPaginationButtons = () => {
+    const buttons = [];
+    const start = Math.max(1, currentPage - 2); // Start at current page - 2
+    const end = Math.min(totalPages, currentPage + 2); // End at current page + 2
+
+    for (let i = start; i <= end; i++) {
+      buttons.push(
+        <button
+          key={i}
+          className={`btn ${
+            currentPage === i ? "btn-secondary" : "btn-outline-primary"
+          } mx-1`}
+          onClick={() =>
+            fetchResults(`${API_BASE_URL}/feedback-applications/?page=${i}`, i)
+          }
+        >
+          {i}
+        </button>
+      );
+    }
+    return buttons;
+  };
 
   return (
     <Router>
@@ -40,26 +74,35 @@ const App = () => {
             element={
               <>
                 <h1>KYC Applications</h1>
-                <ResultsTable results={results} />{" "}
-                {/* Passing API results to the table */}
-                <div className="pagination-buttons mt-4">
-                  {/* Disable the "Previous" button if there's no previous page */}
+                <p>Total Results: {count}</p>
+                <ResultsTable results={results} />
+
+                <div className="pagination-controls d-flex align-items-center mt-4">
                   <button
                     className="btn btn-primary me-2"
-                    onClick={() => fetchResults(previous)}
+                    onClick={() => fetchResults(previous, currentPage - 1)}
                     disabled={!previous}
                   >
                     Previous
                   </button>
-                  {/* Disable the "Next" button if there's no next page */}
+
+                  {/* Page number buttons */}
+                  <div className="page-buttons mx-2">
+                    {getPaginationButtons()}
+                  </div>
+
                   <button
-                    className="btn btn-primary"
-                    onClick={() => fetchResults(next)}
+                    className="btn btn-primary ms-2"
+                    onClick={() => fetchResults(next, currentPage + 1)}
                     disabled={!next}
                   >
                     Next
                   </button>
                 </div>
+
+                <span className="mx-3">
+                  Page {currentPage} of {totalPages}
+                </span>
               </>
             }
           />

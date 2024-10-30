@@ -1,8 +1,7 @@
-// src/components/DetailView/RemarkForm.jsx
 import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Import the Quill CSS
-import { postRemark } from "../../api/apiService"; // Adjust the import path as needed
+import { postRemark } from "../../api/apiService";
 import "../../styles/RemarkForm.css";
 
 const RemarkForm = ({ applicationId }) => {
@@ -12,7 +11,6 @@ const RemarkForm = ({ applicationId }) => {
     try {
       const result = await postRemark(applicationId, remark);
       if (result) {
-        console.log("Remark submitted successfully:", remark);
         setRemark(""); // Clear the remark after submission
       } else {
         console.error("Failed to submit remark.");
@@ -25,7 +23,6 @@ const RemarkForm = ({ applicationId }) => {
   return (
     <div className="mt-4 mb-5">
       {" "}
-      {/* Added mb-5 for bottom margin */}
       <h3>Add Remark</h3>
       <ReactQuill
         value={remark}

@@ -7,10 +7,9 @@ const ResultsTable = ({ results }) => {
   const [searchInput, setSearchInput] = useState("");
 
   const data = React.useMemo(() => {
-    // Map over results to extract required fields, including updated_at
-    return results.map((result) => ({
+    return results?.map((result) => ({
       application_id: result.application,
-      updated_at: result.updated_at, // Assuming updated_at is available in the API response
+      updated_at: result.updated_at,
     }));
   }, [results]);
 
@@ -22,17 +21,16 @@ const ResultsTable = ({ results }) => {
         Cell: ({ value }) => <Link to={`/detail/${value}`}>{value}</Link>,
       },
       {
-        Header: "Updated At", // New column for updated_at
+        Header: "Updated At",
         accessor: "updated_at",
         Cell: ({ value }) => {
-          // Format the date without showing seconds
           const formattedDate = new Intl.DateTimeFormat("en-US", {
             year: "numeric",
             month: "long",
             day: "numeric",
             hour: "numeric",
             minute: "numeric",
-            hour12: true, // Use 12-hour format
+            hour12: true,
           }).format(new Date(value));
 
           return <span>{formattedDate}</span>;
@@ -42,7 +40,6 @@ const ResultsTable = ({ results }) => {
     []
   );
 
-  // Table hooks
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable(
       {
@@ -52,12 +49,16 @@ const ResultsTable = ({ results }) => {
       useSortBy
     );
 
-  // Handle search
   const filteredRows = rows.filter((row) => {
     return Object.values(row.original).some((value) =>
       String(value).toLowerCase().includes(searchInput.toLowerCase())
     );
   });
+
+  // Check if `results` is empty and show a message if it is
+  if (results.length === 0) {
+    return <div>No results found.</div>;
+  }
 
   return (
     <div>

@@ -1,0 +1,23 @@
+.pagination-controls {
+    justify-content: center;
+  }
+  
+  .page-buttons {
+    display: flex;
+    align-items: center;
+  }
+  
+  .page-buttons .btn {
+    width: 40px; /* Optional: make buttons a fixed width */
+  }
+  
+  /* Additional styles for better spacing */
+  .btn-primary {
+    margin: 0 5px; /* Add margin for better spacing between buttons */
+  }
+  
+  .mx-2 {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  

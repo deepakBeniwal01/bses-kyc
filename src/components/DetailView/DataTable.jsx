@@ -1,4 +1,3 @@
-// src/components/DetailView/DataTable.jsx
 import React, { useState } from "react";
 import { useTable } from "react-table";
 import "../../styles/DataTable.css";
@@ -11,17 +10,13 @@ const DataTable = ({ fullDetails, feedback }) => {
   const [loading, setLoading] = useState(false);
 
   const handleImageClick = async (snapHash) => {
-    
     if (snapHash) {
       setLoading(true);
       setModalOpen(true);
       // Fetch document with token using the snap_hash as documentID
       const documentResponse = await fetchDocumentWithToken(snapHash); // Pass snap_hash as documentID
 
-      console.log(documentResponse , "documentResponse");
-
       if (documentResponse) {
-        
         // Create a URL for the image blob
         const imageUrl = URL.createObjectURL(documentResponse);
         setCurrentImageSrc(imageUrl); // Store the document image URL
@@ -109,7 +104,7 @@ const DataTable = ({ fullDetails, feedback }) => {
               ? "Yes"
               : "No"
             : "N/A",
-        feedback: null, // Add specific feedback if necessary
+        feedback: null, 
       },
       {
         field: "Is Registered",
@@ -133,7 +128,7 @@ const DataTable = ({ fullDetails, feedback }) => {
           >
             Show Image
           </button>
-        ), // Add specific feedback if necessary
+        ), 
       },
       {
         field: "Witness Page Hash",
@@ -146,12 +141,12 @@ const DataTable = ({ fullDetails, feedback }) => {
           >
             Show Image
           </button>
-        ), // Add specific feedback if necessary
+        ), 
       },
       {
         field: "Address",
         result: fullDetails.applied_address || "N/A",
-        feedback: null, // Add specific feedback if necessary
+        feedback: null, 
       },
       {
         field: "Applied Address Matching",
@@ -159,42 +154,56 @@ const DataTable = ({ fullDetails, feedback }) => {
           <div className="address-matching">
             {fullDetails.applied_address_matching
               ? fullDetails.applied_address_matching.map((address, index) => (
-                  <div key={index}>
-                    {`${address.located_address}`}
-                    <br />
-                    {`(Confidence: ${address.confidence_level}, Page No: ${address.page_no})`}
-                    <br />
-                    <button
-                      className="image-button"
-                      onClick={() => handleImageClick(address.snap_hash)}
-                    >
-                      Show Image
-                    </button>
+                  <div key={index} className="address-item">
+                    <div>
+                      {`${address.located_address}`}
+                      <br />
+                      {`(Confidence: ${address.confidence_level}, Page No: ${address.page_no})`}
+                      <br />
+                      <button
+                        className="image-button"
+                        onClick={() => handleImageClick(address.snap_hash)}
+                      >
+                        Show Image
+                      </button>
+                    </div>
                   </div>
                 ))
               : "N/A"}
           </div>
         ),
         feedback: (
-          <div className="address-matching">
+          <div className="address-matching-feedback">
             {feedback.address_feedback
               ? feedback.address_feedback.map((fb, index) => {
                   const matchingAddress =
                     fullDetails.applied_address_matching[index];
-                  const matchingPageNo = matchingAddress?.page_no; // Get the page number
+                  const matchingPageNo = matchingAddress?.page_no;
 
                   return (
-                    <div key={index}>
-                      {`Extracted Address: ${fb.extracted_address || "N/A"},`}
+                    <div key={index} className="feedback-item">
+                      <strong>Extracted Address:</strong>{" "}
+                      {fb.extracted_address || "N/A"}
                       <br />
-                      {`Extracted Address Remarks: ${
-                        fb.extracted_address_remarks || "N/A"
-                      },`}
+                      <strong>Extracted Address Remarks:</strong>{" "}
+                      {fb.extracted_address_remarks || "N/A"}
                       <br />
-                      {`Confidence Remarks: ${
-                        fb.confidence_level_remarks || "N/A"
-                      } (Page No: ${matchingPageNo})`}
-                      <br /> {/* Adds space between entries */}
+                      <strong>Confidence Level:</strong>{" "}
+                      {fb.confidence_level || "N/A"} (Page No: {matchingPageNo})
+                      <br />
+                      <strong>Confidence Remarks:</strong>{" "}
+                      {fb.confidence_level_remarks || "N/A"} (Page No:{" "}
+                      {matchingPageNo})
+                      <br />
+                      <strong>Page No Feedback:</strong>{" "}
+                      {fb.address_page_number_feedback || "N/A"} (Page No:{" "}
+                      {matchingPageNo})
+                      <br />
+                      <strong>Page No Remarks:</strong>{" "}
+                      {fb.corrected_address_page_number || "N/A"} (Page No:{" "}
+                      {matchingPageNo})
+                      <br />
+                      <hr /> {/* Add a horizontal line for separation */}
                     </div>
                   );
                 })
@@ -203,76 +212,23 @@ const DataTable = ({ fullDetails, feedback }) => {
         ),
       },
       {
-        field: "Address Page Number",
-        result: fullDetails.applied_address_matching
-          ? (
-              <div>
-                {Array.from(new Set(fullDetails.applied_address_matching.map(address => address.page_no)))
-                  .map((pageNo, index) => (
-                    <div key={index}>{pageNo}</div>
-                  ))}
-              </div>
-            )
-          : "N/A",
-        feedback: fullDetails.applied_address_matching
-          ? fullDetails.applied_address_matching.map((address, index) => {
-              const feedbackForAddress = feedback.address_feedback
-                ? feedback.address_feedback[index]
-                : null;
-      
-              const pageNumberFeedback = feedbackForAddress?.address_page_number_feedback || "N/A";
-              const correctedPageNo = feedbackForAddress?.corrected_address_page_number || "N/A";
-      
-              return (
-                <div key={index}>
-                  {pageNumberFeedback !== "N/A" // Show feedback only if it's not blank
-                    ? feedbackForAddress.confidence_level === "correct"
-                      ? `Page No: ${address.page_no} (Feedback: Correct)`
-                      : `Page No: ${
-                          address.page_no
-                        } (Feedback: Incorrect, Corrected Page: ${correctedPageNo}, Remarks: ${
-                          feedbackForAddress.confidence_level_remarks || "N/A"
-                        })`
-                    : `Page No: ${address.page_no} (Feedback: N/A)`}
-                </div>
-              );
-            })
-          : "N/A",
-      },
-      {
-        field: "Confidence Level",
-        result: fullDetails.applied_address_matching
-          ? fullDetails.applied_address_matching
-              .map((address) => `${address.confidence_level}`)
-              .join(", ")
-          : "N/A",
-        feedback: feedback.address_feedback ? (
-          <div
-            dangerouslySetInnerHTML={{
-              __html: feedback.address_feedback
-                .map((fb, index) => {
-                  const matchingConfidenceLevel =
-                    fullDetails.applied_address_matching[index]
-                      ?.confidence_level;
-                  const matchingPageNo =
-                    fullDetails.applied_address_matching[index]?.page_no;
-                  return fb.confidence_level === "correct"
-                    ? "Correct"
-                    : `Incorrect for ${matchingConfidenceLevel} of Page no - ${matchingPageNo} (Remark: ${
-                        fb.confidence_level_remarks || "N/A"
-                      })`;
-                })
-                .join(", <br />"), // Add <br /> after each entry
-            }}
-          />
-        ) : (
-          "N/A"
-        ),
-      },
-      {
         field: "Document Quality",
-        result: feedback.document_quality || "N/A",
-        feedback: "Document quality checked", // Assuming this field only provides a status
+        result: feedback.document_quality,
+        feedback: (() => {
+          // Determine feedback based on document quality
+          const feedbackMapping = {
+            0: "No quality available.",
+            1: "Good quality document.",
+            2: "Average quality document.",
+            3: "Poor quality document.",
+          };
+
+          // Get the quality value from feedback
+          const documentQuality = feedback.document_quality;
+
+          // Return the corresponding feedback or a default message if not found
+          return feedbackMapping[documentQuality] || "Feedback not available.";
+        })(),
       },
       {
         field: "ML Remarks",
@@ -285,7 +241,7 @@ const DataTable = ({ fullDetails, feedback }) => {
         ) : (
           "N/A"
         ),
-        feedback: null, // Add specific feedback if necessary
+        feedback: null, 
       },
     ];
   }, [fullDetails, feedback]);
@@ -352,7 +308,7 @@ const DataTable = ({ fullDetails, feedback }) => {
           <img
             src={currentImageSrc}
             alt="Document"
-            className="ModalImage" // Add a class for styling
+            className="ModalImage"
           />
         )}
         <button onClick={() => setModalOpen(false)}>Close</button>
